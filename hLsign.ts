@@ -324,6 +324,7 @@ async function signWithdrawFromBridgeAction(
 // spotTransfer();
 
 
+// Withdraw USDC, this txn goes across the bridge and costs $1 in fees as of writing this
 async function initializeWithdrawal() {
   const curTime = Date.now();
 
