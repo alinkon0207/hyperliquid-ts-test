@@ -160,70 +160,18 @@ async function signWithdrawFromBridgeAction(
 }
 
 
-async function transferBetweenSpotAndPerp() {
-  const classTransfer = {
-    "usdc": /* 9100000 */ 0,
-    "toPerp": true,
-  };
-
-  const action = {
-    type: "spotUser",
-    classTransfer: classTransfer,
-  };
-
-  const nonce = Date.now();
-
-  const privateKey = process.env.PRIVATE_KEY;
-  if (!privateKey) {
-    throw new Error("PRIVATE_KEY not set in .env file");
-  }
-  const wallet = new ethers.Wallet(privateKey);
-
-  console.log("Wallet address:", wallet.address);
-
-  try {
-    const signature = await signL1Action(wallet, action, null, nonce);
-    console.log("Signature:", signature);
-
-    const payload = {
-      action: action,
-      nonce: nonce,
-      signature: signature,
-      vaultAddress: null,
-    };
-
-    console.log("Payload to be sent:", JSON.stringify(payload, null, 2));
-
-    const response = await axios.post(
-      "https://api.hyperliquid.xyz/exchange",
-      payload,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-
-    console.log("Transfer Response:", response.data);
-  } catch (error: any) {
-    console.error("Error spot transfer:", error.message);
-  }
-}
-
-transferBetweenSpotAndPerp();
-
-
-// async function usdTransfer() {
-//   const curTime = Date.now();
-
-//   const action = {
-//     type: "usdSend",
-//     signatureChainId: "0xa4b1",
-//     hyperliquidChain: "Mainnet",
-//     destination: "0xd36e4a5805f6b14c2f4Fa0A2fF7B8D5b35E10971",
-//     amount: "1.0",
-//     time: curTime
+// async function transferBetweenSpotAndPerp() {
+//   const classTransfer = {
+//     "usdc": /* 9100000 */ 0,
+//     "toPerp": true,
 //   };
 
-//   const nonce = curTime;
+//   const action = {
+//     type: "spotUser",
+//     classTransfer: classTransfer,
+//   };
+
+//   const nonce = Date.now();
 
 //   const privateKey = process.env.PRIVATE_KEY;
 //   if (!privateKey) {
@@ -234,13 +182,14 @@ transferBetweenSpotAndPerp();
 //   console.log("Wallet address:", wallet.address);
 
 //   try {
-//     const signature = await signUsdTransferAction(wallet, action);
+//     const signature = await signL1Action(wallet, action, null, nonce);
 //     console.log("Signature:", signature);
 
 //     const payload = {
 //       action: action,
 //       nonce: nonce,
 //       signature: signature,
+//       vaultAddress: null,
 //     };
 
 //     console.log("Payload to be sent:", JSON.stringify(payload, null, 2));
@@ -259,7 +208,58 @@ transferBetweenSpotAndPerp();
 //   }
 // }
 
-// usdTransfer();
+// transferBetweenSpotAndPerp();
+
+
+async function usdTransfer() {
+  const curTime = Date.now();
+
+  const action = {
+    type: "usdSend",
+    signatureChainId: "0xa4b1",
+    hyperliquidChain: "Mainnet",
+    destination: "0xd36e4a5805f6b14c2f4Fa0A2fF7B8D5b35E10971",
+    amount: "1.0",
+    time: curTime
+  };
+
+  const nonce = curTime;
+
+  const privateKey = process.env.PRIVATE_KEY;
+  if (!privateKey) {
+    throw new Error("PRIVATE_KEY not set in .env file");
+  }
+  const wallet = new ethers.Wallet(privateKey);
+
+  console.log("Wallet address:", wallet.address);
+
+  try {
+    const signature = await signUsdTransferAction(wallet, action);
+    console.log("Signature:", signature);
+
+    const payload = {
+      action: action,
+      nonce: nonce,
+      signature: signature,
+    };
+
+    console.log("Payload to be sent:", JSON.stringify(payload, null, 2));
+
+    const response = await axios.post(
+      "https://api.hyperliquid.xyz/exchange",
+      payload,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    console.log("Transfer Response:", response.data);
+  } catch (error: any) {
+    console.error("Error spot transfer:", error.message);
+  }
+}
+
+usdTransfer();
 
 
 // async function spotSend() {
