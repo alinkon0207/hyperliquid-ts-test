@@ -1,5 +1,5 @@
 import { bigIntToStringWithTwoDecimalPlaces } from './lib/bigNumber';
-import { publicClient } from './config/clinet'
+import { publicClient } from './config/client'
 
 
 
